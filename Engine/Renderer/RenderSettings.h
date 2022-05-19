@@ -31,6 +31,7 @@ struct RenderSettings : public Object
 	bool indirect_diffuse_enabled;
 	bool indirect_specular_enabled;
 	bool subsurface_scattering_enabled;
+	bool ambient_occlusion_enabled;
 
 	bool ssao_enabled;
 	float ssao_scale;
@@ -182,6 +183,14 @@ struct RenderSettings : public Object
 	float hgi_ao_radius;
 	float hgi_ao_bias;
 	float hgi_ao_blend;
+
+	float ssdgi_intensity;
+	std::size_t ssdgi_sample_count;
+	float ssdgi_sampling_radius;
+
+	std::size_t ssr_iteration_count;
+	float ssr_iteration_step;
+	float ssr_sample_thickness;
 };
 
 #endif

@@ -4,10 +4,10 @@
 	<!-- <RenderMode mode="VoxelConeTracingRenderModule" /> -->
 	<!-- <RenderMode mode="HybridGlobalIlluminationRenderModule" /> -->
 	<!-- <RenderMode mode="TemporalReflectiveShadowMappingRenderModule" /> -->
-	<RenderMode mode="DirectLightingRenderModule" />
+	<RenderMode mode="EducationalTestRenderModule" />
 	<!-- <RenderMode mode="LightPropagationVolumesRenderModule" /> -->
 
-	<General indirectDiffuseEnabled="true" indirectSpecularEnabled="true" subsurfaceScatteringEnabled="true" ambientOcclusionEnabled="true" />
+	<General indirectDiffuseEnabled="true" indirectSpecularEnabled="true" subsurfaceScatteringEnabled="true" ambientOcclusionEnabled="false" />
 
 	<SSAO enabled="true" scale="1" samples="32" noiseSize="4" radius="0.6" bias="0.025" blurEnabled="true" temporalFilterEnabled="false" />
 
@@ -41,5 +41,7 @@
 		mipmapLevels="6" voxelShadowBias="0" indirectDiffuseIntensity="20" indirectSpecularIntensity="20" refractiveIndirectIntensity="1" diffuseConeDistance="0.3" diffuseOriginBias="0.007" aoEnabled="true" aoConeRatio="1" aoConeDistance="0.1" shadowConeEnabled="false" specularConeRatio="0.1" specularConeDistance="0.6" specularOriginBias="0.007" refractiveConeRatio="0.1" refractiveConeDistance="0.6" shadowConeRatio="0.01" shadowConeDistance="0.365" originBias="0.0025" temporalFilterEnabled="true" />
 
 	<HGI temporalFilterEnabled="true" rsmSamples="16" rsmRadius="50" ssdoSamples="8" ssdoRadius="1" rsmIndirectDiffuseIntensity="1" ssdoIndirectDiffuseIntensity="20" ssdoSamplingScale="0.2" interpolationEnabled="false" interpolationScale="0.5" minInterpolationDistance="1" minInterpolationAngle="30" rsmThickness="1" rsmIndirectSpecularIntensity="1" ssrIndirectSpecularIntensity="20" aoEnabled="true" aoSamples="8" aoRadius="1" aoBias="0.025" aoBlend="0.5" />
+
+	<EducationalTest ssdgiIntensity="10000" ssdgiSampleCount="10" ssdgiSamplingRadius="0.3" ssrIterationCount="1000" ssrIterationStep="1" ssrSampleThickness="0.1" />
 
 </RenderSettings>

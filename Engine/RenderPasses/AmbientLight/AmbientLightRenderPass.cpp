@@ -27,7 +27,7 @@ RenderVolumeCollection* AmbientLightRenderPass::Execute (const RenderScene* rend
 
 	auto lightObject = renderScene->GetRenderAmbientLightObject ();
 
-	bool aoEnabled = settings.ssao_enabled;
+	bool aoEnabled = settings.ambient_occlusion_enabled;
 
 	_ambientLightVolume->SetAmbientLight (
 		lightObject != nullptr && lightObject->isActive ? lightObject->intensity : 1.0f,

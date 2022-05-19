@@ -35,6 +35,7 @@
 #include "RenderPasses/TemporalAntialiasing/TAAStatisticsObject.h"
 #include "RenderPasses/VolumetricLighting/VolLightingStatisticsObject.h"
 #include "RenderPasses/LightShafts/LightShaftsStatisticsObject.h"
+#include "RenderPasses/EducationalTest/EducationalTestStatisticsObject.h"
 
 namespace fs = std::filesystem;
 
@@ -96,6 +97,7 @@ void EditorRenderingSettings::ShowRenderingSettingsWindow ()
 	renderModes ["LightPropagationVolumesRenderModule"] = 2;
 	renderModes ["VoxelConeTracingRenderModule"] = 3;
 	renderModes ["ScreenSpaceGlobalIlluminationRenderModule"] = 4;
+	renderModes ["EducationalTestRenderModule"] = 5;
 
 	int lastRenderMode = renderModes [_settings->renderMode];
 	int renderMode = lastRenderMode;
@@ -104,17 +106,19 @@ void EditorRenderingSettings::ShowRenderingSettingsWindow ()
 		"Reflective Shadow Maps",
 		"Light Propagation Volumes",
 		"Voxel Cone Tracing",
-		"Screen Space Global Illumination"
+		"Screen Space Global Illumination",
+		"Educational Test"
 	};
 
-	ImGui::Combo("Render Module", &renderMode, items, 5);
+	ImGui::Combo("Render Module", &renderMode, items, 6);
 
 	const char* srenderModes[] = {
 		"DirectLightingRenderModule",
 		"ReflectiveShadowMappingRenderModule",
 		"LightPropagationVolumesRenderModule",
 		"VoxelConeTracingRenderModule",
-		"ScreenSpaceGlobalIlluminationRenderModule"
+		"ScreenSpaceGlobalIlluminationRenderModule",
+		"EducationalTestRenderModule"
 	};
 
 	if (lastRenderMode != renderMode) {
@@ -172,8 +176,141 @@ void EditorRenderingSettings::ShowRenderingSettingsWindow ()
 
 	ImGui::Separator ();
 
+	if (_settings->renderMode == "EducationalTestRenderModule") {
+		ImGui::SetNextItemOpen (true);
+		if (ImGui::CollapsingHeader ("Educational Test")) {
+
+			ImGui::SetNextItemOpen (true);
+
+			if (ImGui::TreeNode ("Diffuse Indirect Illumination")) {
+
+				ImGui::InputFloat ("Intensity", &_settings->ssdgi_intensity, 0.1f);
+
+				std::size_t limit1 = 1, limit2 = 500;
+				ImGui::SliderScalar ("Sample Count", ImGuiDataType_U32, &_settings->ssdgi_sample_count, &limit1, &limit2);
+
+				ImGui::InputFloat ("Sampling Radius", &_settings->ssdgi_sampling_radius, 0.1f);
+
+				ImGui::Separator ();
+
+				ImGui::SetNextItemOpen (true);
+
+				if (ImGui::TreeNode ("Debug")) {
+					auto ssdgiStat = StatisticsManager::Instance ()->GetStatisticsObject <EducationalTestStatisticsObject> ();
+
+					ShowImage ("Diffuse Indirect Illumination Map", ssdgiStat->ssdgiMapVolume);
+
+					ImGui::TreePop();
+				}
+
+				ImGui::TreePop();
+			}
+
+			ImGui::SetNextItemOpen (true);
+
+			if (ImGui::TreeNode ("Glossy Reflections")) {
+
+				ImGui::InputFloat ("Intensity", &_settings->ssr_intensity, 0.1f);
+
+				// ImGui::SliderFloat ("Roughness", &_settings->ssr_roughness, 0.0f, 1.0f);
+
+				std::size_t step = 1;
+				ImGui::InputScalar ("Iteration Count", ImGuiDataType_U32, &_settings->ssr_iteration_count, &step);
+
+				ImGui::SliderFloat ("Iteration Step", &_settings->ssr_iteration_step, 0.0f, 10.0f);
+
+				ImGui::SliderFloat ("Sample Thickness", &_settings->ssr_sample_thickness, 0.0f, 10.0f);
+
+				// std::size_t strideStep = 1;
+				// ImGui::InputScalar ("Sample Stride", ImGuiDataType_U32, &_settings->ssr_stride, &strideStep);
+
+				ImGui::Separator ();
+
+				ImGui::SetNextItemOpen (true);
+
+				if (ImGui::TreeNode ("Debug")) {
+					auto ssrStat = StatisticsManager::Instance ()->GetStatisticsObject <EducationalTestStatisticsObject> ();
+
+					ShowImage ("Glossy Reflections Map", ssrStat->ssrMapVolume);
+
+					ImGui::TreePop();
+				}
+
+				ImGui::TreePop();
+			}
+
+			// if (ImGui::TreeNode ("Refraction")) {
+
+			// 	ImGui::InputFloat ("Intensity", &_settings->sst_intensity, 0.1f);
+
+			// 	std::size_t step = 1;
+			// 	ImGui::InputScalar ("Iteration Count", ImGuiDataType_U32, &_settings->sst_iterations, &step);
+
+			// 	ImGui::SliderFloat ("Sample Thickness", &_settings->sst_thickness, 0.0f, 10.0f);
+
+			// 	ImGui::Separator ();
+
+			// 	if (ImGui::TreeNode ("Debug")) {
+			// 		auto ssrStat = StatisticsManager::Instance ()->GetStatisticsObject <SSSubsurfaceScatteringStatisticsObject> ();
+
+			// 		ShowImage ("SSR Map", ssrStat->ssrMapVolume);
+
+			// 		ImGui::TreePop();
+			// 	}
+
+			// 	ImGui::TreePop();
+			// }
+
+			// if (ImGui::TreeNode ("Screen Space Ambient Occlusion")) {
+
+			// 	ImGui::Checkbox ("Ambient Occlusion Enabled", &_settings->ssao_enabled);
+
+			// 	float scale = _settings->ssao_scale;
+			// 	ImGui::InputFloat ("Scale", &scale);
+			// 	if (scale > 0) {
+			// 		_settings->ssao_scale = scale;
+			// 	}
+
+			// 	std::size_t limit1 = 0, limit2 = 200;
+			// 	ImGui::SliderScalar ("Samples Size", ImGuiDataType_U32, &_settings->ssao_samples, &limit1, &limit2);
+				
+			// 	ImGui::InputScalar ("Noise Size", ImGuiDataType_U32, &_settings->ssao_noise_size);
+			// 	ImGui::InputFloat ("Radius", &_settings->ssao_radius, 0.1f);
+			// 	ImGui::InputFloat ("Bias", &_settings->ssao_bias, 0.1f);
+
+			// 	ImGui::Separator ();
+
+			// 	ImGui::Checkbox ("Blur Enabled", &_settings->ssao_blur_enabled);
+			// 	// ImGui::Checkbox ("Temporal Filter Enabled", &_settings->ssao_temporal_filter_enabled);
+
+			// 	ImGui::Separator ();
+
+			// 	if (ImGui::TreeNode ("Debug")) {
+
+			// 		auto ssaoStat = StatisticsManager::Instance ()->GetStatisticsObject <SSAOStatisticsObject> ();
+
+			// 		ShowImage ("SSAO Map", ssaoStat->ssaoMapVolume);
+
+			// 		ShowImage ("SSAO Blur Map", ssaoStat->ssaoBlurMapVolume);
+
+			// 		ShowImage ("SSAO Temporal Filter Map", ssaoStat->ssaoTemporalFilterMapVolume);
+
+			// 		int mapWidth = ImGui::GetContentRegionAvail().x * 0.95f;
+
+			// 		ImGui::Text ("SSAO Noise Map");
+			// 		ShowImage (ssaoStat->ssaoNoiseMapVolume->GetTextureView (0)->GetGPUIndex (), glm::ivec2 (mapWidth));
+
+			// 		ImGui::TreePop();
+			// 	}
+
+			// 	ImGui::TreePop();
+			// }
+		}
+	}
+
     // ImGui::Spacing();
 
+	if (_settings->renderMode != "EducationalTestRenderModule") {
 	if (ImGui::CollapsingHeader ("Reflective Shadow Maps")) {
 
 		auto rsmStat = StatisticsManager::Instance ()->GetStatisticsObject <RSMStatisticsObject> ();
@@ -810,6 +947,7 @@ void EditorRenderingSettings::ShowRenderingSettingsWindow ()
 
 			ImGui::TreePop();
 		}
+	}
 	}
 
 	ImGui::End();

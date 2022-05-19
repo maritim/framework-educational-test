@@ -79,6 +79,9 @@ Object* RenderSettingsLoader::Load (const std::string& filename)
 		else if (name == "HGI") {
 			ProcessHGI (content, settings);
 		}
+		else if (name == "EducationalTest") {
+			ProcessEducationalTest (content, settings);
+		}
 
 		content = content->NextSiblingElement ();
 	}
@@ -102,10 +105,12 @@ void RenderSettingsLoader::ProcessGeneral (TiXmlElement* xmlElem, RenderSettings
 	std::string indirectDiffuseEnabled = xmlElem->Attribute ("indirectDiffuseEnabled");
 	std::string indirectSpecularEnabled = xmlElem->Attribute ("indirectSpecularEnabled");
 	std::string subsurfaceScatteringEnabled = xmlElem->Attribute ("subsurfaceScatteringEnabled");
+	std::string ambientOcclusionEnabled = xmlElem->Attribute ("ambientOcclusionEnabled");
 
 	settings->indirect_diffuse_enabled = Extensions::StringExtend::ToBool (indirectDiffuseEnabled);
 	settings->indirect_specular_enabled = Extensions::StringExtend::ToBool (indirectSpecularEnabled);
 	settings->subsurface_scattering_enabled = Extensions::StringExtend::ToBool (subsurfaceScatteringEnabled);
+	settings->ambient_occlusion_enabled = Extensions::StringExtend::ToBool (ambientOcclusionEnabled);
 }
 
 void RenderSettingsLoader::ProcessSSAO (TiXmlElement* xmlElem, RenderSettings* settings)
@@ -442,4 +447,21 @@ void RenderSettingsLoader::ProcessHGI (TiXmlElement* xmlElem, RenderSettings* se
 	settings->hgi_ao_radius = std::stof (aoRadius);
 	settings->hgi_ao_bias = std::stof (aoBias);
 	settings->hgi_ao_blend = std::stof (aoBlend);
+}
+
+void RenderSettingsLoader::ProcessEducationalTest (TiXmlElement* xmlElem, RenderSettings* settings)
+{
+	std::string ssdgiSampleCount = xmlElem->Attribute ("ssdgiSampleCount");
+	std::string ssdgiSamplingRadius = xmlElem->Attribute ("ssdgiSamplingRadius");
+	std::string ssdgiIntensity = xmlElem->Attribute ("ssdgiIntensity");
+	std::string ssrIterationCount = xmlElem->Attribute ("ssrIterationCount");
+	std::string ssrIterationStep = xmlElem->Attribute ("ssrIterationStep");
+	std::string ssrSampleThickness = xmlElem->Attribute ("ssrSampleThickness");
+
+	settings->ssdgi_sample_count = std::stoi (ssdgiSampleCount);
+	settings->ssdgi_sampling_radius = std::stof (ssdgiSamplingRadius);
+	settings->ssdgi_intensity = std::stof (ssdgiIntensity);
+	settings->ssr_iteration_count = std::stoi (ssrIterationCount);
+	settings->ssr_iteration_step = std::stof (ssrIterationStep);
+	settings->ssr_sample_thickness = std::stof (ssrSampleThickness);
 }
